@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="never">
+    <title>AES加解密系统</title>
+    <link rel="stylesheet" href="/static/base.css" />
+    <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+    <!--导航栏-->
+    <div class="navbar">
+        <div>
+            <a href="javascript:void(0);" class="logo" onclick="showContent('home')">
+                <img src="/static/lizhi.png" alt="my logo" style="height:50px;"/>
+            </a>
+        </div>
+        <div>
+            <ul>
+                <li>
+                    <a href="javascript:void(0);" onclick="showContent('eightBit')">二进制加密</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" onclick="showContent('string')">字符串加密</a>
+                </li>
+
+                <li>
+                    <a href="javascript:void(0);" onclick="showContent('double')">二重加密</a>
+                </li>
+                <li  style="position: relative;">
+                    <a href="javascript:void(0);" onclick="toggleDropdown('tripleDropdown')">三重加密</a>
+                    <ul id="tripleDropdown" class="dropdown">
+                    <li><a href="javascript:void(0);" onclick="showContent('triple1')">32bit</a></li>
+                    <li><a href="javascript:void(0);" onclick="showContent('triple2')">48bit</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" onclick="showContent('meetInTheMiddleAttack')">中间相遇攻击</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" onclick="showContent('fileEncryption')">文件加密</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" onclick="showContent('cipherBlockChaining')">CBC模式加密</a>
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+        
+    <div class="content">
+        <!--介绍页（加密原理介绍）-->
+        <div id="home" class="content-item active">
+            <h1>加解密原理介绍</h1>  
+            <img src="/static/yuanli.png" alt="">
+        </div>
+        <!--二进制加密-->
+        <div id="eightBit" class="content-item">
+            <input id="cleartext" type="text" placeholder="明文(16 bit)" required/>
+            <input id="ciphertext" type="text" placeholder="密文(16 bit)" required/>
+            <input id="key" type="text" placeholder="密钥(16 bit)" required/>
+            <button id="viewStandard">查看标准</button>
+            <button id="encrypt">加密</button>
+            <button id="decrypt">解密</button>
+            <button class="clearButton">清除内容</button>
+            <textarea id="result" rows="10" cols="30" placeholder="加解密结果"></textarea>
+        </div>
+        <!-- 模态窗口 -->
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>标准查看</h2>
+                <p><a href="/static/s-aes.pdf" download class="download-link">附件：AES加密算法标准.docx</a></p>
+                <button id="confirmBtn">确定</button>
+            </div>
+        </div>
+        <script>
+            // 获取模态窗口元素
+            var modal = document.getElementById("myModal");
+            // 获取“查看标准”按钮
+            var btn = document.getElementById("viewStandard");
+            var span = document.getElementsByClassName("close")[0];
+            // 点击“查看标准”按钮时，打开模态窗口
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
+            // 点击 <span> (x) 元素，关闭模态窗口
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+            // 点击确定按钮，关闭模态窗口
+            document.getElementById("confirmBtn").onclick = function () {
+                modal.style.display = "none";
+            }
+            // 点击窗口外部时，关闭模态窗口
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        </script>
+        <!--ASCII码加密-->
+        <div id="string" class="content-item">
+            <input id="cleartext" type="text" placeholder="明文(字符串 2 bytes)" required/>
+            <input id="ciphertext" type="text" placeholder="密文(二进制 16 bit)" required/>
+            <input id="key" type="text" placeholder="密钥(16 bit)" required/>
+            <button id="encrypt">加密</button>
+            <button id="decrypt">解密</button>
+            <button class="clearButton">清除内容</button>
+            <textarea id="result" rows="10" cols="30" placeholder="加解密结果"></textarea>
+        </div>
+        <!--二重加密-->
+        <div id="double" class="content-item">
+            <div class="container" >
+                <div class="left">
+                    <div class="title">
+                        <strong>二重加密方式1：</strong>
+                    </div>
+                    <div class="image-container">
+                        <img src="/static/source1.jpg" alt="Encryption Image" class="center-image">
+                    </div>
+                    <input id="cleartext1" class="left-input1" type="text" placeholder="明文(16 bit)"/>
+                    <input id="ciphertext1" class="left-input2" type="text" placeholder="密文(16 bit)"/>
+                    <input id="key1" class="left-input3" type="text" placeholder="密钥(32 bit)" required/>
+                    <button id="encrypt1" class="left-button" >加密</button>
+                    <button id="decrypt1" class="left-button" >解密</button>
+                    <textarea id="result1" class="left-textarea" rows="10" cols="30" placeholder="加密结果"></textarea>
+                </div>
+                <div class="right">
+                    <div class="title">
+                        <strong>二重加密方式2：</strong>
+                    </div>
+                    <div class="image-container">
+                        <img src="/static/source2.png" alt="Encryption Image" class="center-image">
+                    </div>
+                    <input id="cleartext2" class="right-input1" type="text" placeholder="明文(16 bit)" required/>
+                    <input id="ciphertext2" class="right-input2" type="text" placeholder="密文(16 bit)" required/>
+                    <input id="key2" class="right-input3" type="text" placeholder="密钥(32 bit)" required/>
+                    <button id="encrypt2" class="right-button">加密</button>
+                    <button id="decrypt2" class="right-button">解密</button>
+                    <textarea id="result2" class="right-textarea" rows="10" cols="30" placeholder="加密结果"></textarea>
+                </div>
+            </div>
+        </div>
+        <!--三重加密（密钥为32 bit）-->
+        <div id="triple1" class="content-item">
+            <input id="cleartext" type="text" placeholder="明文(16 bit)" required/>
+            <input id="ciphertext" type="text" placeholder="密文(16 bit)" required/>
+            <input id="key" type="text" placeholder="密钥(32 bit)" required/>
+            <button id="encrypt">加密</button>
+            <button id="decrypt">解密</button>
+            <button class="clearButton">清除内容</button>
+            <textarea id="result" rows="10" cols="30" placeholder="加解密结果"></textarea>
+        </div>
+        <!--三重加密（密钥为48 bit）-->
+        <div id="triple2" class="content-item">
+              <div class="container" >
+                <div class="left">
+                    <div class="title">
+                        <strong>三重加密方式1：</strong>
+                    </div>
+                    <div class="image-container">
+                        <img src="/static/source3.png" alt="Encryption Image" class="center-image">
+                    </div>
+                    <input id="cleartext1" class="left-input1" type="text" placeholder="明文(16 bit)"/>
+                    <input id="ciphertext1" class="left-input2" type="text" placeholder="密文(16 bit)"/>
+                    <input id="key1" class="left-input3" type="text" placeholder="密钥(48 bit)" required/>
+                    <button id="encrypt1" class="left-button" >加密</button>
+                    <button id="decrypt1" class="left-button" >解密</button>
+                    <textarea id="result1" class="left-textarea" rows="10" cols="30" placeholder="加密结果"></textarea>
+                </div>
+                <div class="right">
+                    <div class="title">
+                        <strong>三重加密方式2：</strong>
+                    </div>
+                    <div class="image-container">
+                        <img src="/static/source4.png" alt="Encryption Image" class="center-image">
+                    </div>
+                    <input id="cleartext2" class="right-input1" type="text" placeholder="明文(16 bit)" required/>
+                    <input id="ciphertext2" class="right-input2" type="text" placeholder="密文(16 bit)" required/>
+                    <input id="key2" class="right-input3" type="text" placeholder="密钥(48 bit)" required/>
+                    <button id="encrypt2" class="right-button">加密</button>
+                    <button id="decrypt2" class="right-button">解密</button>
+                    <textarea id="result2" class="right-textarea" rows="10" cols="30" placeholder="加密结果"></textarea>
+                </div>
+            </div>
+        </div>
+        <!--中间相遇攻击-->
+        <div id="meetInTheMiddleAttack" class="content-item">
+            <input id="cleartext" type="text" placeholder="明文(16 bit)" required/>
+            <input id="ciphertext" type="text" placeholder="密文(16 bit)" required/>
+            <button id="performMeetInTheMiddleAttack">执行中间相遇攻击</button>
+            <button class="clearButton">清除内容</button>
+            <textarea id="result" rows="10" cols="30" placeholder="中间相遇攻击解密结果"></textarea>
+        </div>
+        <!-- 文件加密 -->
+        <div id="fileEncryption" class="content-item">
+            <form id="fileForm" enctype="multipart/form-data">
+                <div class="file-input-group">
+                    <textarea id="fileName" rows="1" cols="30" placeholder="文件名"></textarea>
+                    <label for="fileInput">
+                        <div class="lBut"><span>选择文件</span></div>
+                    </label>
+                    <input id="fileInput" type="file" style="display: none;" />
+                </div>
+                <input type="text" id="fileKey" placeholder="密钥(16 bit)" required/>
+{#                <input type="text" id="savePath" placeholder="保存路径" readonly>#}
+{#                <button type="button" id="selectFolder">选择文件夹</button>#}
+                <textarea id="savePath" rows="1" cols="30" placeholder="请填写保存地址(例：C:\Users\ZZR\Desktop\secret.txt)"></textarea>
+
+                <button type="button" id="encryptFile">加密文件</button>
+                <button type="button" id="clearButton" class="clearButton">清除内容</button>
+            </form>
+            <textarea id="FileResult" rows="5" cols="30" placeholder="结果"></textarea>
+        </div>
+        <!--CBC模式加密-->
+        <div id="cipherBlockChaining" class="content-item">
+            <input id="cbcCleartext" type="text" placeholder="明文(长文本)" required/>
+            <input id="cbcCiphertext" type="text" placeholder="密文" required/>
+            <input id="cbcKey" type="text" placeholder="密钥(16 bit)" required/>
+            <input id="iv" type="text" placeholder="IV(16 bit)" required/>
+            <button id="cbcEncrypt">加密</button>
+            <button id="cbcDecrypt">解密</button>
+            <button class="clearButton">清除内容</button>
+            <textarea id="cbcResult" rows="10" cols="30" placeholder="加解密结果"></textarea>
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
